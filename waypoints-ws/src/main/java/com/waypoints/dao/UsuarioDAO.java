@@ -134,25 +134,32 @@ public class UsuarioDAO {
 	}
 	
 	public Usuario cadastrar(Usuario usuario) throws SQLException {
-		String SQL = "INSERT INTO usuario (nome, email, senha, categoria_cnh, data_nascimento, sexo) "
-				+ "VALUES (?,?,?,?,?,?);";
+		String SQL = "INSERT INTO usuario (nome, email, senha, categoria_cnh, sexo) "
+				+ "VALUES (?,?,?,?,?);";
 		PreparedStatement pStmt = Conexao.getPreparedStatement(SQL);
 		try {
 			pStmt.setString(1, usuario.getNome());
 			pStmt.setString(2, usuario.getEmail());
-			pStmt.setString(3, usuario.getSenha());
+			pStmt.setString(3, CriptografiaUtil.encrypt(usuario.getSenha()));
 			pStmt.setString(4, usuario.getCategoriaCNH());
-			pStmt.setString(5, usuario.getDataNascimento().toString());
-			pStmt.setString(6, usuario.getSexo().toString());
+			pStmt.setString(5, usuario.getSexo().toString());
 			
 			if (pStmt.executeUpdate() > 0) {
-				return doLogin(usuario);
+				return usuario;
 			}
 
 		} catch (SQLException ex) {
 			Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		return null;
+	}
+	
+	public Usuario findById(Integer id) throws SQLException {
+		String SQL = "SELECT * FROM usuario WHERE id=?";
+		Map<String, Object> params = new HashMap<>();
+		params.put("id", id);
+		
+		return getSingleResult(SQL, params);
 	}
 	
 	private Usuario getSingleResult(String query, Map<String, Object> filter) throws SQLException {
@@ -175,7 +182,7 @@ public class UsuarioDAO {
 			u.setNome(rs.getString("nome"));
 			u.setEmail(rs.getString("email"));
 			u.setCategoriaCNH(rs.getString("categoria_cnh"));
-			u.setDataNascimento(rs.getDate("data_nascimento"));
+//			u.setDataNascimento(rs.getDate("data_nascimento"));
 			u.setSexo(Sexo.valueOf(rs.getString("sexo")));
 			return u;
 		}

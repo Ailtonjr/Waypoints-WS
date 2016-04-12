@@ -42,18 +42,27 @@ public class UsuarioFA {
 			throw new BusinessException("O email informado é inválido.");
 		}
 		if ((usuario.getSenha() == null)
-				|| (usuario.getSenha().isEmpty())
-				|| (usuario.getSenha().length() < TAM_MIN_SENHA)) {
+				|| (usuario.getSenha().isEmpty())) {
 			throw new BusinessException("A senha informada é inválida.");
 		}
+		if (usuario.getSenha().length() < TAM_MIN_SENHA) {
+			throw new BusinessException("A senha deve ter pelo menos \"" + TAM_MIN_SENHA + "\" caracteres.");
+		}
+		
 		if (usuarioDAO.getByEmail(usuario.getEmail()) != null) {
 			throw new BusinessException("Este e-mail já está cadastrado."); 
 		}
 		if (usuario.getSexo() == null) {
 			throw new BusinessException("O sexo deve ser selecionado.");
 		}
-		
 		return usuarioDAO.cadastrar(usuario);
+	}
+	
+	public Usuario getById(Integer id) throws BusinessException, SQLException {
+		if ((id == null) || (id < 0)) {
+			throw new BusinessException("ID informado inválido.");
+		}
+		return usuarioDAO.findById(id);
 	}
 	
 }

@@ -1,10 +1,5 @@
 package com.waypoints.entity;
 
-import java.util.Date;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-
 public class Usuario {
 
 	public enum Sexo {M, F};
@@ -15,8 +10,8 @@ public class Usuario {
 //	@JsonIgnore
 	private String senha;
 	private String categoriaCNH;
-	@JsonFormat(pattern = "dd/MM/yyyy")
-	private Date dataNascimento;
+//	@JsonFormat(pattern = "dd/MM/yyyy")
+//	private Date dataNascimento;
 	private Sexo sexo;
 
 	public Long getId() {
@@ -59,13 +54,13 @@ public class Usuario {
 		this.categoriaCNH = categoriaCNH;
 	}
 
-	public Date getDataNascimento() {
-		return dataNascimento;
-	}
-
-	public void setDataNascimento(Date dataNascimento) {
-		this.dataNascimento = dataNascimento;
-	}
+//	public Date getDataNascimento() {
+//		return dataNascimento;
+//	}
+//
+//	public void setDataNascimento(Date dataNascimento) {
+//		this.dataNascimento = dataNascimento;
+//	}
 
 	public Sexo getSexo() {
 		return sexo;
