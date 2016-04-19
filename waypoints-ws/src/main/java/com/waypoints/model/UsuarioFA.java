@@ -33,6 +33,35 @@ public class UsuarioFA {
 	}
 
 	public Usuario cadastro(Usuario usuario) throws BusinessException, SQLException {
+		try {
+			validaUsuario(usuario);
+		} catch (BusinessException be) {
+			throw new BusinessException(be.getMessage());
+		}
+		return usuarioDAO.cadastrar(usuario);
+	}
+	
+	public Usuario alterar(Usuario usuario) throws BusinessException, SQLException {
+		try {
+			validaUsuario(usuario);
+		} catch (BusinessException be) {
+			throw new BusinessException(be.getMessage());
+		}
+		return usuarioDAO.alterar(usuario);
+	}
+	
+	public Usuario excluir(Usuario usuario) throws BusinessException, SQLException {
+		return usuarioDAO.excluir(usuario);
+	}
+	
+	public Usuario getById(Integer id) throws BusinessException, SQLException {
+		if ((id == null) || (id < 0)) {
+			throw new BusinessException("ID informado inválido.");
+		}
+		return usuarioDAO.findById(id);
+	}
+	
+	private void validaUsuario(Usuario usuario) throws BusinessException, SQLException {
 		if (usuario.getNome() == null || usuario.getNome().isEmpty()) {
 			throw new BusinessException("O nome informado é inválido.");
 		}
@@ -55,14 +84,6 @@ public class UsuarioFA {
 		if (usuario.getSexo() == null) {
 			throw new BusinessException("O sexo deve ser selecionado.");
 		}
-		return usuarioDAO.cadastrar(usuario);
-	}
-	
-	public Usuario getById(Integer id) throws BusinessException, SQLException {
-		if ((id == null) || (id < 0)) {
-			throw new BusinessException("ID informado inválido.");
-		}
-		return usuarioDAO.findById(id);
 	}
 	
 }

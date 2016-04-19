@@ -98,7 +98,6 @@ public class UsuarioDAO {
 //
 //		return usuarios;
 //	}
-
 	
 	public Usuario getById(Long id) throws SQLException {
 		String SQL = "SELECT * FROM usuario WHERE id=?";
@@ -112,6 +111,14 @@ public class UsuarioDAO {
 		String SQL = "SELECT * FROM usuario WHERE email=?";
 		Map<String, Object> params = new HashMap<>();
 		params.put("email", email);
+		
+		return getSingleResult(SQL, params);
+	}
+	
+	public Usuario findById(Integer id) throws SQLException {
+		String SQL = "SELECT * FROM usuario WHERE id=?";
+		Map<String, Object> params = new HashMap<>();
+		params.put("id", id);
 		
 		return getSingleResult(SQL, params);
 	}
@@ -154,12 +161,43 @@ public class UsuarioDAO {
 		return null;
 	}
 	
-	public Usuario findById(Integer id) throws SQLException {
-		String SQL = "SELECT * FROM usuario WHERE id=?";
-		Map<String, Object> params = new HashMap<>();
-		params.put("id", id);
-		
-		return getSingleResult(SQL, params);
+	public Usuario alterar(Usuario usuario) throws SQLException {
+		String SQL = "UPDATE usuario "
+				+ "SET nome=?, email=?, senha=?, categoria_cnh=?, sexo=? "
+				+ "WHERE id=?;";
+		PreparedStatement pStmt = Conexao.getPreparedStatement(SQL);
+		try {
+			pStmt.setString(1, usuario.getNome());
+			pStmt.setString(2, usuario.getEmail());
+			pStmt.setString(3, CriptografiaUtil.encrypt(usuario.getSenha()));
+			pStmt.setString(4, usuario.getCategoriaCNH());
+			pStmt.setString(5, usuario.getSexo().toString());
+			pStmt.setLong(6, usuario.getId());
+			
+			if (pStmt.executeUpdate() > 0) {
+				return usuario;
+			}
+
+		} catch (SQLException ex) {
+			Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		return null;
+	}
+	
+	public Usuario excluir(Usuario usuario) throws SQLException {
+		String SQL = "DELETE FROM usuario WHERE id=?;";
+		PreparedStatement pStmt = Conexao.getPreparedStatement(SQL);
+		try {
+			pStmt.setLong(1, usuario.getId());
+			
+			if (pStmt.executeUpdate() > 0) {
+				return null;
+			}
+
+		} catch (SQLException ex) {
+			Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		return usuario;
 	}
 	
 	private Usuario getSingleResult(String query, Map<String, Object> filter) throws SQLException {

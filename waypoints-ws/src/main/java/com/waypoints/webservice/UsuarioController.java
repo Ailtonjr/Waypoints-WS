@@ -62,8 +62,39 @@ public class UsuarioController {
 		}
 	}
 	
+	@POST
+	@Path("alterar")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response alterarCadastro(Usuario usuario) {
-		return null;
+		try {
+			if (usuarioFA.alterar(usuario) != null) {
+				usuario = usuarioFA.login(usuario);
+				return Response.ok().status(Status.OK).entity(usuario).build();
+			}
+			return Response.status(Status.BAD_REQUEST).entity(usuario).build();
+		} catch (BusinessException be) {
+			return Response.status(Status.NOT_ACCEPTABLE).entity(be.getMessage()).build();
+		} catch (SQLException sqle) {
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(sqle.getMessage()).build();
+		}
+	}
+	
+	@POST
+	@Path("excluir")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response excluirUsuario(Usuario usuario) {
+		try {
+			if ((usuarioFA.login(usuario) != null) && (((usuario = usuarioFA.excluir(usuario)) == null))) {
+				return Response.ok().status(Status.OK).entity(usuario).build();
+			}
+			return Response.status(Status.BAD_REQUEST).entity(usuario).build();
+		} catch (BusinessException be) {
+			return Response.status(Status.NOT_ACCEPTABLE).entity(be.getMessage()).build();
+		} catch (SQLException sqle) {
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(sqle.getMessage()).build();
+		}
 	}
 	
 	@GET
