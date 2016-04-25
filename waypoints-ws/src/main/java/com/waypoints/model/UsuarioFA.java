@@ -16,7 +16,7 @@ public class UsuarioFA {
 	@Inject
 	UsuarioDAO usuarioDAO = new UsuarioDAO();
 
-	public Usuario login(Usuario usuario) throws BusinessException, SQLException {
+	public Usuario autentica(Usuario usuario) throws BusinessException, SQLException {
 		if ((usuario.getEmail() == null)
 				|| (usuario.getEmail().isEmpty())
 				|| (!EmailUtil.isValid(usuario.getEmail()))) {

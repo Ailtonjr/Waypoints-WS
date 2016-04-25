@@ -35,10 +35,12 @@ public class UsuarioController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response login(Usuario usuario) {
 		try {
-			usuario = usuarioFA.login(usuario);
-			return Response.ok().entity(usuario).build();
+			if ((usuario = usuarioFA.autentica(usuario)) != null) {
+				return Response.status(Status.OK).entity(usuario).build();
+			}
+			return Response.status(Status.UNAUTHORIZED).entity(usuario).build();
 		} catch (BusinessException be) {
-			return Response.status(Status.NOT_ACCEPTABLE).entity(be.getMessage()).build();
+			return Response.status(Status.FORBIDDEN).entity(be.getMessage()).build();
 		} catch (SQLException sqle) {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(sqle.getMessage()).build();
 		}
@@ -50,9 +52,8 @@ public class UsuarioController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response cadastro(Usuario usuario) {
 		try {
-			if (usuarioFA.cadastro(usuario) != null) {
-				usuario = usuarioFA.login(usuario);
-				return Response.ok().status(Status.CREATED).entity(usuario).build();
+			if ((usuario = usuarioFA.cadastro(usuario)) != null) {
+				return Response.status(Status.CREATED).entity(usuario).build();
 			}
 			return Response.status(Status.BAD_REQUEST).entity(usuario).build();
 		} catch (BusinessException be) {
@@ -66,11 +67,10 @@ public class UsuarioController {
 	@Path("alterar")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response alterarCadastro(Usuario usuario) {
+	public Response alterarCadastro(Usuario authUser, Usuario usuario) {
 		try {
-			if (usuarioFA.alterar(usuario) != null) {
-				usuario = usuarioFA.login(usuario);
-				return Response.ok().status(Status.OK).entity(usuario).build();
+			if ((usuarioFA.autentica(usuario) != null) && ((usuario = usuarioFA.alterar(usuario)) != null)) {
+				return Response.status(Status.OK).entity(usuario).build();
 			}
 			return Response.status(Status.BAD_REQUEST).entity(usuario).build();
 		} catch (BusinessException be) {
@@ -86,8 +86,8 @@ public class UsuarioController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response excluirUsuario(Usuario usuario) {
 		try {
-			if ((usuarioFA.login(usuario) != null) && (((usuario = usuarioFA.excluir(usuario)) == null))) {
-				return Response.ok().status(Status.OK).entity(usuario).build();
+			if ((usuarioFA.autentica(usuario) != null) && (((usuario = usuarioFA.excluir(usuario)) == null))) {
+				return Response.status(Status.OK).entity(usuario).build();
 			}
 			return Response.status(Status.BAD_REQUEST).entity(usuario).build();
 		} catch (BusinessException be) {
@@ -104,7 +104,7 @@ public class UsuarioController {
 		try {
 			Usuario usuario = usuarioFA.getById(id);
 			if (usuario != null) {
-				return Response.ok().entity(usuario).build();
+				return Response.status(Status.OK).entity(usuario).build();
 			}
 			return Response.status(Status.BAD_REQUEST).entity(usuario).build();
 		} catch (BusinessException be) {
