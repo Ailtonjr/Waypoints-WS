@@ -18,6 +18,8 @@ public class Usuario {
 		return id;
 	}
 
+	@Deprecated
+	// problema de segurança
 	public void setId(Long id) {
 		this.id = id;
 	}

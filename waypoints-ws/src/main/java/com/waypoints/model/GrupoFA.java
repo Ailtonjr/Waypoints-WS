@@ -1,31 +1,27 @@
-//package com.waypoints.model;
-//
-//import java.sql.SQLException;
-//
-//import javax.inject.Inject;
-//
-//import com.waypoints.dao.GrupoDAO;
-//import com.waypoints.entity.Grupo;
-//import com.waypoints.entity.Usuario;
-//import com.waypoints.exception.BusinessException;
-//import com.waypoints.util.EmailUtil;
-//
-//public class GrupoFA {
-//
-//	private final int TAM_MIN_SENHA = 8; 
-//	
-//	@Inject
-//	GrupoDAO grupoDAO = new GrupoDAO();
-//
-//	public Grupo cadastro(Grupo grupo) throws BusinessException, SQLException {
-//		try {
-//			validaGrupo(grupo);
-//		} catch (BusinessException be) {
-//			throw new BusinessException(be.getMessage());
-//		}
-//		return grupoDAO.cadastrar(grupo);
-//	}
-//	
+package com.waypoints.model;
+
+import java.sql.SQLException;
+
+import javax.inject.Inject;
+
+import com.waypoints.dao.GrupoDAO;
+import com.waypoints.entity.Grupo;
+import com.waypoints.exception.BusinessException;
+
+public class GrupoFA {
+
+	@Inject
+	GrupoDAO grupoDAO = new GrupoDAO();
+
+	public Grupo cadastro(Grupo grupo) throws BusinessException, SQLException {
+		try {
+			validaGrupo(grupo);
+		} catch (BusinessException be) {
+			throw new BusinessException(be.getMessage());
+		}
+		return grupoDAO.cadastrar(grupo);
+	}
+	
 //	public Grupo alterar(Grupo grupo) throws BusinessException, SQLException {
 //		try {
 //			validaGrupo(grupo);
@@ -46,10 +42,10 @@
 //		return grupoDAO.findById(id);
 //	}
 //	
-//	private void validaGrupo(Grupo grupo) throws BusinessException, SQLException {
-//		if (grupo.getNome() == null || grupo.getNome().isEmpty()) {
-//			throw new BusinessException("O nome informado é inválido.");
-//		}
+	private void validaGrupo(Grupo grupo) throws BusinessException, SQLException {
+		if (grupo.getNome() == null || grupo.getNome().isEmpty()) {
+			throw new BusinessException("O nome informado é inválido.");
+		}
 //		if ((grupo.getEmail() == null)
 //				|| (grupo.getEmail().isEmpty())
 //				|| (!EmailUtil.isValid(grupo.getEmail()))) {
@@ -69,6 +65,6 @@
 //		if (grupo.getSexo() == null) {
 //			throw new BusinessException("O sexo deve ser selecionado.");
 //		}
-//	}
-//	
-//}
+	}
+	
+}

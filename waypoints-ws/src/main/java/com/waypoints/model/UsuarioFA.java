@@ -22,9 +22,6 @@ public class UsuarioFA {
 				|| (!EmailUtil.isValid(usuario.getEmail()))) {
 			throw new BusinessException("O email informado é inválido.");
 		}
-		if (usuario.getSenha() == null || usuario.getSenha().isEmpty()) {
-			throw new BusinessException("A senha informada é inválida.");
-		}
 		if (usuarioDAO.getByEmail(usuario.getEmail()) == null) {
 			throw new BusinessException("E-mail não cadastrado."); 
 		}
@@ -70,8 +67,7 @@ public class UsuarioFA {
 				|| (!EmailUtil.isValid(usuario.getEmail()))) {
 			throw new BusinessException("O email informado é inválido.");
 		}
-		if ((usuario.getSenha() == null)
-				|| (usuario.getSenha().isEmpty())) {
+		if ((usuario.getSenha() == null) || (usuario.getSenha().isEmpty())) {
 			throw new BusinessException("A senha informada é inválida.");
 		}
 		if (usuario.getSenha().length() < TAM_MIN_SENHA) {

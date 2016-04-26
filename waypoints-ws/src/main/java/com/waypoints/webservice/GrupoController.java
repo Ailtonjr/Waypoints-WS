@@ -1,50 +1,47 @@
-//package com.waypoints.webservice;
-//
-//import java.sql.SQLException;
-//
-//import javax.inject.Inject;
-//import javax.ws.rs.Consumes;
-//import javax.ws.rs.GET;
-//import javax.ws.rs.POST;
-//import javax.ws.rs.Path;
-//import javax.ws.rs.PathParam;
-//import javax.ws.rs.Produces;
-//import javax.ws.rs.core.MediaType;
-//import javax.ws.rs.core.Response;
-//import javax.ws.rs.core.Response.Status;
-//
-//import com.waypoints.entity.Grupo;
-//import com.waypoints.entity.Usuario;
-//import com.waypoints.exception.BusinessException;
-//import com.waypoints.model.GrupoFA;
-//import com.waypoints.model.UsuarioFA;
-//
-//@Path("grupo")
-//public class GrupoController {
-//
-//	@Inject
-//	GrupoFA grupoFA = new GrupoFA();
-//	@Inject
-//	UsuarioFA usuarioFA = new UsuarioFA();
-//	
-//	
-//	@POST
-//	@Path("cadastro")
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	@Produces(MediaType.APPLICATION_JSON)
-//	public Response cadastrarGrupo(Usuario authUser, Grupo grupo) {
-//		try {
-//			if ((usuarioFA.autentica(authUser) != null) && ((grupo = grupoFA.cadastro(grupo)) != null)) {
-//				return Response.ok().status(Status.CREATED).entity(grupo).build();
-//			}
-//			return Response.status(Status.BAD_REQUEST).entity(grupo).build();
-//		} catch (BusinessException be) {
-//			return Response.status(Status.NOT_ACCEPTABLE).entity(be.getMessage()).build();
-//		} catch (SQLException sqle) {
-//			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(sqle.getMessage()).build();
-//		}
-//	}
-//	
+package com.waypoints.webservice;
+
+import java.sql.SQLException;
+
+import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import com.waypoints.entity.Grupo;
+import com.waypoints.entity.Usuario;
+import com.waypoints.exception.BusinessException;
+import com.waypoints.model.GrupoFA;
+import com.waypoints.model.UsuarioFA;
+
+@Path("grupo")
+public class GrupoController {
+
+	@Inject
+	GrupoFA grupoFA = new GrupoFA();
+	@Inject
+	UsuarioFA usuarioFA = new UsuarioFA();
+	
+	@POST
+	@Path("cadastro")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response cadastrarGrupo(Usuario authUser, Grupo grupo) {
+		try {
+			if ((usuarioFA.autentica(authUser) != null) && ((grupo = grupoFA.cadastro(grupo)) != null)) {
+				return Response.ok().status(Status.CREATED).entity(grupo).build();
+			}
+			return Response.status(Status.BAD_REQUEST).entity(grupo).build();
+		} catch (BusinessException be) {
+			return Response.status(Status.FORBIDDEN).entity(be.getMessage()).build();
+		} catch (SQLException sqle) {
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(sqle.getMessage()).build();
+		}
+	}
+	
 //	@POST
 //	@Path("cadastro")
 //	@Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -113,5 +110,5 @@
 //			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(sqle.getMessage()).build();
 //		}
 //	}
-//	
-//}
+	
+}

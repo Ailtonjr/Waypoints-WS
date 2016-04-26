@@ -1,6 +1,7 @@
 package com.waypoints.webservice;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -24,10 +25,10 @@ public class UsuarioController {
 	UsuarioFA usuarioFA = new UsuarioFA();
 
 	/**
-	 * @param usuario
-	 * @return usuario se login for efetuado com sucesso
-	 * @return Status.CREATED - sucesso na criação do usuário
-	 * @return Status.NOT_ACCEPTABLE - parâmetros inaceitáveis
+	 * @param usuario - usuario a ser autenticado
+	 * NOT_FOUND - usuário não encontrado
+	 * FORBIDDEN - parâmetros inaceitáveis
+	 * @return OK - usuario autenticado com sucesso
 	 */
 	@POST
 	@Path("login")
@@ -38,7 +39,7 @@ public class UsuarioController {
 			if ((usuario = usuarioFA.autentica(usuario)) != null) {
 				return Response.status(Status.OK).entity(usuario).build();
 			}
-			return Response.status(Status.UNAUTHORIZED).entity(usuario).build();
+			return Response.status(Status.NOT_FOUND).entity(usuario).build();
 		} catch (BusinessException be) {
 			return Response.status(Status.FORBIDDEN).entity(be.getMessage()).build();
 		} catch (SQLException sqle) {
@@ -57,7 +58,7 @@ public class UsuarioController {
 			}
 			return Response.status(Status.BAD_REQUEST).entity(usuario).build();
 		} catch (BusinessException be) {
-			return Response.status(Status.NOT_ACCEPTABLE).entity(be.getMessage()).build();
+			return Response.status(Status.FORBIDDEN).entity(be.getMessage()).build();
 		} catch (SQLException sqle) {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(sqle.getMessage()).build();
 		}
@@ -69,7 +70,8 @@ public class UsuarioController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response alterarCadastro(Usuario authUser, Usuario usuario) {
 		try {
-			if ((usuarioFA.autentica(usuario) != null) && ((usuario = usuarioFA.alterar(usuario)) != null)) {
+			// arrumar autenticacao de usuario ao alterar
+			if ((usuarioFA.autentica(authUser) != null) && ((usuario = usuarioFA.alterar(usuario)) != null)) {
 				return Response.status(Status.OK).entity(usuario).build();
 			}
 			return Response.status(Status.BAD_REQUEST).entity(usuario).build();
@@ -86,12 +88,12 @@ public class UsuarioController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response excluirUsuario(Usuario usuario) {
 		try {
-			if ((usuarioFA.autentica(usuario) != null) && (((usuario = usuarioFA.excluir(usuario)) == null))) {
+			if ((usuarioFA.autentica(usuario) != null) && (usuarioFA.excluir(usuario) == null)) {
 				return Response.status(Status.OK).entity(usuario).build();
 			}
-			return Response.status(Status.BAD_REQUEST).entity(usuario).build();
+			return Response.status(Status.NOT_FOUND).entity(usuario).build();
 		} catch (BusinessException be) {
-			return Response.status(Status.NOT_ACCEPTABLE).entity(be.getMessage()).build();
+			return Response.status(Status.FORBIDDEN).entity(be.getMessage()).build();
 		} catch (SQLException sqle) {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(sqle.getMessage()).build();
 		}
@@ -114,4 +116,14 @@ public class UsuarioController {
 		}
 	}
 	
+	@POST
+	@Path("teste")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response excluirUsuario(ArrayList<Usuario> users) {
+		for (Usuario u : users) {
+			System.out.println(u.getNome());
+		}
+		return Response.status(Status.OK).build();
+	}
 }

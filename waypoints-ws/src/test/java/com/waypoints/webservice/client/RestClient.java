@@ -3,8 +3,7 @@ package com.waypoints.webservice.client;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
-import javax.ws.rs.core.Response.Status;
+import java.util.ArrayList;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -20,13 +19,52 @@ import com.waypoints.util.JSONUtil;
 public class RestClient {
 
 	public static void main(String[] args) {
-		login();
+//		login();
 //		cadastroUsuario();
-//		findById(30);
-		alterarCadastro();
+//		findById(35);
+//		alterarCadastro();
 //		excluirUsuario();
+		teste();
 	}
 
+	private static void teste() {
+		try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
+
+			HttpPost postRequest = new HttpPost("http://localhost:8080/waypoints-ws/recursos/usuario/teste");
+
+			Usuario authUser = new Usuario();
+			authUser.setNome("Romulo");
+			
+			Usuario newUser = new Usuario();
+			newUser.setNome("Rômulo Göelzer Portolann");
+			
+			ArrayList<Usuario> users = new ArrayList<>();
+			users.add(authUser);
+			users.add(newUser);
+			
+			// O servidor espera uma entidade JSON
+			String usersJSON = JSONUtil.getJSON(users);
+			
+			StringEntity usersEntity = new StringEntity(usersJSON);
+			usersEntity.setContentType("application/json");
+			postRequest.setEntity(usersEntity);
+
+			HttpResponse response = httpClient.execute(postRequest);
+
+			// Leitura da resposta vinda do servidor
+			BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+
+			String resposta;
+			System.out.println("Status: " + response.getStatusLine().getStatusCode());
+			while ((resposta = br.readLine()) != null) {
+				System.out.println("Servidor responde: " + resposta);
+			}
+
+		} catch (IOException e) {
+
+		}
+	}
+	
 	private static void login() {
 		try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
 
@@ -34,7 +72,7 @@ public class RestClient {
 
 			Usuario usuario = new Usuario();
 			usuario.setEmail("teste2@gmail.com");
-			usuario.setSenha("teste2teste");
+			usuario.setSenha("teste2teste2");
 
 			// O servidor espera uma entidade JSON
 			String usuarioJson = JSONUtil.getJSON(usuario);
@@ -64,9 +102,9 @@ public class RestClient {
 			HttpPost postRequest = new HttpPost("http://localhost:8080/waypoints-ws/recursos/usuario/cadastro");
 
 			Usuario usuario = new Usuario();
-			usuario.setNome("Teste3");
-			usuario.setEmail("teste3@gmail.com");
-			usuario.setSenha("teste3teste3");
+			usuario.setNome("HUE");
+			usuario.setEmail("hue@gmail.com");
+			usuario.setSenha("huehuehue");
 			usuario.setCategoriaCNH("AB");
 //			System.out.println(Calendar.getInstance().getTime());
 //			usuario.setDataNascimento(new Date("21/09/1993").);
@@ -123,6 +161,7 @@ public class RestClient {
 			BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
 
 			String resposta;
+			System.out.println("Status: " + response.getStatusLine().getStatusCode());
 			while ((resposta = br.readLine()) != null) {
 				System.out.println("Servidor responde: " + resposta);
 			}
@@ -138,9 +177,9 @@ public class RestClient {
 			HttpPost postRequest = new HttpPost("http://localhost:8080/waypoints-ws/recursos/usuario/excluir");
 
 			Usuario usuario = new Usuario();
-			usuario.setId(new Long(29));
-			usuario.setEmail("batatinha@gmail.com");
-			usuario.setSenha("batatinha5");
+			usuario.setId(new Long(35));
+			usuario.setEmail("hue@gmail.com");
+			usuario.setSenha("huehuehue");
 
 			// O servidor espera uma entidade JSON
 			String usuarioJson = JSONUtil.getJSON(usuario);
@@ -154,6 +193,7 @@ public class RestClient {
 			BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
 
 			String resposta;
+			System.out.println("Status: " + response.getStatusLine().getStatusCode());
 			while ((resposta = br.readLine()) != null) {
 				System.out.println("Servidor responde: " + resposta);
 			}
