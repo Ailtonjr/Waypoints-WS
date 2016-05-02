@@ -4,14 +4,18 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 
+import com.waypoints.entity.Grupo;
+import com.waypoints.entity.Integrante;
 import com.waypoints.entity.Usuario;
 import com.waypoints.entity.Usuario.Sexo;
 import com.waypoints.util.JSONUtil;
@@ -21,37 +25,23 @@ public class RestClient {
 	public static void main(String[] args) {
 //		login();
 //		cadastroUsuario();
-//		findById(35);
 //		alterarCadastro();
+//		findById(40);
 //		excluirUsuario();
-		teste();
+//		teste();
+//		cadastroGrupo();
+//		alterarGrupo();
+//		removerGrupo();
+		findGrupoById(14);
 	}
-
-	private static void teste() {
+	
+	private static void findGrupoById(int id) {
 		try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
 
-			HttpPost postRequest = new HttpPost("http://localhost:8080/waypoints-ws/recursos/usuario/teste");
+			HttpGet postRequest = new HttpGet("http://localhost:8080/waypoints-ws/recursos/grupo/" + id);
 
-			Usuario authUser = new Usuario();
-			authUser.setNome("Romulo");
-			
-			Usuario newUser = new Usuario();
-			newUser.setNome("Rômulo Göelzer Portolann");
-			
-			ArrayList<Usuario> users = new ArrayList<>();
-			users.add(authUser);
-			users.add(newUser);
-			
-			// O servidor espera uma entidade JSON
-			String usersJSON = JSONUtil.getJSON(users);
-			
-			StringEntity usersEntity = new StringEntity(usersJSON);
-			usersEntity.setContentType("application/json");
-			postRequest.setEntity(usersEntity);
-
-			HttpResponse response = httpClient.execute(postRequest);
-
-			// Leitura da resposta vinda do servidor
+	        HttpResponse response = httpClient.execute(postRequest);
+	        
 			BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
 
 			String resposta;
@@ -65,6 +55,147 @@ public class RestClient {
 		}
 	}
 	
+	private static void removerGrupo() {
+		try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
+
+			HttpPost postRequest = new HttpPost("http://localhost:8080/waypoints-ws/recursos/grupo/excluir");
+
+			Grupo g = new Grupo();
+			g.setId(new Long(14));
+			g.setNome("Its Over 9 thousand");
+			g.setNomeProprietario("ProprietarioTeste");
+			g.setRamo("RamoTeste");
+			
+			String grupoJSON = JSONUtil.getJSON(g);
+	        StringEntity entity = new StringEntity(grupoJSON, ContentType.APPLICATION_JSON);
+	        postRequest.setEntity(entity);
+	        HttpResponse response = httpClient.execute(postRequest);
+	        
+			BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+
+			String resposta;
+			System.out.println("Status: " + response.getStatusLine().getStatusCode());
+			while ((resposta = br.readLine()) != null) {
+				System.out.println("Servidor responde: " + resposta);
+			}
+
+		} catch (IOException e) {
+
+		}
+	}
+	
+	private static void alterarGrupo() {
+		try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
+
+			HttpPost postRequest = new HttpPost("http://localhost:8080/waypoints-ws/recursos/grupo/alterar");
+
+			Usuario u1 = new Usuario();
+			u1.setId(new Long(8));
+			u1.setNome("Rômulo Göelzer Portolann");
+			u1.setEmail("romulogoelzer@gmail.com");
+			u1.setCategoriaCNH("AB");
+			u1.setSexo(Sexo.M);
+			
+			Usuario u2 = new Usuario();
+			u2.setId(new Long(33));
+			u2.setNome("Teste2");
+			u2.setEmail("teste2@gmail.com");
+			u2.setCategoriaCNH("AB");
+			u2.setSexo(Sexo.M);
+			
+			Integrante i1 = new Integrante();
+			i1.setUsuario(u1);
+			i1.setPapel("ADMIN");
+
+			Integrante i2 = new Integrante();
+			i2.setUsuario(u2);
+			i2.setPapel("PLANEJADOR");
+			
+			List<Integrante> integrantes = new ArrayList<>();
+			integrantes.add(i1);
+			integrantes.add(i2);
+			
+			Grupo g = new Grupo();
+			g.setId(new Long(13));
+			g.setNome("Its Over 9 thousand");
+			g.setNomeProprietario("ProprietarioTeste");
+			g.setRamo("RamoTeste");
+			g.setIntegrantes(integrantes);
+			
+			String grupoJSON = JSONUtil.getJSON(g);
+	        StringEntity entity = new StringEntity(grupoJSON, ContentType.APPLICATION_JSON);
+	        postRequest.setEntity(entity);
+	        HttpResponse response = httpClient.execute(postRequest);
+	        
+			BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+
+			String resposta;
+			System.out.println("Status: " + response.getStatusLine().getStatusCode());
+			while ((resposta = br.readLine()) != null) {
+				System.out.println("Servidor responde: " + resposta);
+			}
+
+		} catch (IOException e) {
+
+		}
+	}
+	
+	private static void cadastroGrupo() {
+		try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
+
+			HttpPost postRequest = new HttpPost("http://localhost:8080/waypoints-ws/recursos/grupo/cadastro");
+
+			Usuario u1 = new Usuario();
+			u1.setId(new Long(8));
+			u1.setNome("Rômulo Göelzer Portolann");
+			u1.setEmail("romulogoelzer@gmail.com");
+			u1.setCategoriaCNH("AB");
+			u1.setSexo(Sexo.M);
+			
+			Usuario u2 = new Usuario();
+			u2.setId(new Long(33));
+			u2.setNome("Teste2");
+			u2.setEmail("teste2@gmail.com");
+			u2.setCategoriaCNH("AB");
+			u2.setSexo(Sexo.M);
+			
+			Integrante i1 = new Integrante();
+			i1.setUsuario(u1);
+			i1.setPapel("ADMIN");
+
+			Integrante i2 = new Integrante();
+			i2.setUsuario(u2);
+			i2.setPapel("PLANEJADOR");
+			
+			List<Integrante> integrantes = new ArrayList<>();
+			integrantes.add(i1);
+			integrantes.add(i2);
+			
+			Grupo g = new Grupo();
+			g.setNome("GrupoTeste1");
+			g.setNomeProprietario("ProprietarioTeste");
+			g.setRamo("RamoTeste");
+			g.setIntegrantes(integrantes);
+			
+			String grupoJSON = JSONUtil.getJSON(g);
+	        StringEntity entity = new StringEntity(grupoJSON, ContentType.APPLICATION_JSON);
+	        postRequest.setEntity(entity);
+	        HttpResponse response = httpClient.execute(postRequest);
+	        
+			BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+
+			String resposta;
+			System.out.println("Status: " + response.getStatusLine().getStatusCode());
+			while ((resposta = br.readLine()) != null) {
+				System.out.println("Servidor responde: " + resposta);
+			}
+
+		} catch (IOException e) {
+
+		}
+
+	}
+
 	private static void login() {
 		try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
 
@@ -102,12 +233,10 @@ public class RestClient {
 			HttpPost postRequest = new HttpPost("http://localhost:8080/waypoints-ws/recursos/usuario/cadastro");
 
 			Usuario usuario = new Usuario();
-			usuario.setNome("HUE");
-			usuario.setEmail("hue@gmail.com");
-			usuario.setSenha("huehuehue");
+			usuario.setNome("potato");
+			usuario.setEmail("potato@gmail.com");
+			usuario.setSenha("potatoes");
 			usuario.setCategoriaCNH("AB");
-//			System.out.println(Calendar.getInstance().getTime());
-//			usuario.setDataNascimento(new Date("21/09/1993").);
 			usuario.setSexo(Sexo.M);
 			
 
@@ -139,12 +268,11 @@ public class RestClient {
 			HttpPost postRequest = new HttpPost("http://localhost:8080/waypoints-ws/recursos/usuario/alterar");
 
 			Usuario usuario = new Usuario();
-			usuario.setId(new Long(32));
-			usuario.setNome("Batatinha5");
-			usuario.setEmail("batatinha5@gmail.com");
-			usuario.setSenha("batatinha5");
+			usuario.setId(new Long(40));
+			usuario.setNome("Teste");
+			usuario.setEmail("finalteste@gmail.com");
+			usuario.setSenha("finalteste");
 			usuario.setCategoriaCNH("AB");
-//			System.out.println(Calendar.getInstance().getTime());
 //			usuario.setDataNascimento(new Date("21/09/1993").);
 			usuario.setSexo(Sexo.M);
 			

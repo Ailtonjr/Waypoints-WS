@@ -1,19 +1,22 @@
 package com.waypoints.entity;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Grupo {
 
-    private Integer id;
+    private Long id;
     private String nome;
     private String ramo;
     private String nomeProprietario;
-
-    public Integer getId() {
+    private List<Integrante> integrantes = new ArrayList<>();
+    
+	public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -40,6 +43,14 @@ public class Grupo {
     public void setNomeProprietario(String nomeProprietario) {
         this.nomeProprietario = nomeProprietario;
     }
+    
+    public List<Integrante> getIntegrantes() {
+		return integrantes;
+	}
+
+	public void setIntegrantes(List<Integrante> integrantes) {
+		this.integrantes = integrantes;
+	}
 
     @Override
     public int hashCode() {

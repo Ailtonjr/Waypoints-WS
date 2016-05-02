@@ -40,7 +40,7 @@ public class UsuarioFA {
 	
 	public Usuario alterar(Usuario usuario) throws BusinessException, SQLException {
 		try {
-			validaUsuario(usuario);
+			validaAlteracaoUsuario(usuario);
 		} catch (BusinessException be) {
 			throw new BusinessException(be.getMessage());
 		}
@@ -76,6 +76,26 @@ public class UsuarioFA {
 		
 		if (usuarioDAO.getByEmail(usuario.getEmail()) != null) {
 			throw new BusinessException("Este e-mail já está cadastrado."); 
+		}
+		if (usuario.getSexo() == null) {
+			throw new BusinessException("O sexo deve ser selecionado.");
+		}
+	}
+	
+	private void validaAlteracaoUsuario(Usuario usuario) throws BusinessException, SQLException {
+		if (usuario.getNome() == null || usuario.getNome().isEmpty()) {
+			throw new BusinessException("O nome informado é inválido.");
+		}
+		if ((usuario.getEmail() == null)
+				|| (usuario.getEmail().isEmpty())
+				|| (!EmailUtil.isValid(usuario.getEmail()))) {
+			throw new BusinessException("O email informado é inválido.");
+		}
+		if ((usuario.getSenha() == null) || (usuario.getSenha().isEmpty())) {
+			throw new BusinessException("A senha informada é inválida.");
+		}
+		if (usuario.getSenha().length() < TAM_MIN_SENHA) {
+			throw new BusinessException("A senha deve ter pelo menos \"" + TAM_MIN_SENHA + "\" caracteres.");
 		}
 		if (usuario.getSexo() == null) {
 			throw new BusinessException("O sexo deve ser selecionado.");

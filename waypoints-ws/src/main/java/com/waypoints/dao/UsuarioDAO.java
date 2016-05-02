@@ -175,6 +175,7 @@ public class UsuarioDAO {
 			pStmt.setLong(6, usuario.getId());
 			
 			if (pStmt.executeUpdate() > 0) {
+				usuario.setSenha(null);
 				return usuario;
 			}
 

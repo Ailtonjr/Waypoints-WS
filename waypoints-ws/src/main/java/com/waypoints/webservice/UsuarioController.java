@@ -1,7 +1,6 @@
 package com.waypoints.webservice;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -39,7 +38,7 @@ public class UsuarioController {
 			if ((usuario = usuarioFA.autentica(usuario)) != null) {
 				return Response.status(Status.OK).entity(usuario).build();
 			}
-			return Response.status(Status.NOT_FOUND).entity(usuario).build();
+			return Response.status(Status.UNAUTHORIZED).entity(usuario).build();
 		} catch (BusinessException be) {
 			return Response.status(Status.FORBIDDEN).entity(be.getMessage()).build();
 		} catch (SQLException sqle) {
@@ -68,15 +67,15 @@ public class UsuarioController {
 	@Path("alterar")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response alterarCadastro(Usuario authUser, Usuario usuario) {
+	public Response alterarCadastro(Usuario usuario) {
 		try {
 			// arrumar autenticacao de usuario ao alterar
-			if ((usuarioFA.autentica(authUser) != null) && ((usuario = usuarioFA.alterar(usuario)) != null)) {
+			if ((usuario = usuarioFA.alterar(usuario)) != null) {
 				return Response.status(Status.OK).entity(usuario).build();
 			}
 			return Response.status(Status.BAD_REQUEST).entity(usuario).build();
 		} catch (BusinessException be) {
-			return Response.status(Status.NOT_ACCEPTABLE).entity(be.getMessage()).build();
+			return Response.status(Status.FORBIDDEN).entity(be.getMessage()).build();
 		} catch (SQLException sqle) {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(sqle.getMessage()).build();
 		}
@@ -108,22 +107,12 @@ public class UsuarioController {
 			if (usuario != null) {
 				return Response.status(Status.OK).entity(usuario).build();
 			}
-			return Response.status(Status.BAD_REQUEST).entity(usuario).build();
+			return Response.status(Status.NOT_FOUND).entity(usuario).build();
 		} catch (BusinessException be) {
-			return Response.status(Status.NOT_ACCEPTABLE).entity(be.getMessage()).build();
+			return Response.status(Status.FORBIDDEN).entity(be.getMessage()).build();
 		} catch (SQLException sqle) {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(sqle.getMessage()).build();
 		}
 	}
 	
-	@POST
-	@Path("teste")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response excluirUsuario(ArrayList<Usuario> users) {
-		for (Usuario u : users) {
-			System.out.println(u.getNome());
-		}
-		return Response.status(Status.OK).build();
-	}
 }

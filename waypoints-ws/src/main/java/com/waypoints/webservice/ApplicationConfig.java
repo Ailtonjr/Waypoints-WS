@@ -19,7 +19,7 @@ public class ApplicationConfig extends Application {
 	private void addRestResourceClasses(Set<Class<?>> resources) {
 		resources.add(com.waypoints.webservice.DemoRest.class);
 		resources.add(com.waypoints.webservice.UsuarioController.class);
-//		resources.add(com.waypoints.webservice.GrupoController.class);
+		resources.add(com.waypoints.webservice.GrupoController.class);
 	}
 	
 }
