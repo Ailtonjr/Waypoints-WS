@@ -27,12 +27,13 @@ public class RestClient {
 //		cadastroUsuario();
 //		alterarCadastro();
 //		findById(40);
+		findByEmail("romulogoelzer@gmail.com");
 //		excluirUsuario();
 //		teste();
 //		cadastroGrupo();
 //		alterarGrupo();
 //		removerGrupo();
-		findGrupoById(14);
+//		findGrupoById(14);
 	}
 	
 	private static void findGrupoById(int id) {
@@ -119,6 +120,7 @@ public class RestClient {
 			g.setId(new Long(13));
 			g.setNome("Its Over 9 thousand");
 			g.setNomeProprietario("ProprietarioTeste");
+			g.setProprietarioId(u1.getId());
 			g.setRamo("RamoTeste");
 			g.setIntegrantes(integrantes);
 			
@@ -172,9 +174,10 @@ public class RestClient {
 			integrantes.add(i2);
 			
 			Grupo g = new Grupo();
-			g.setNome("GrupoTeste1");
-			g.setNomeProprietario("ProprietarioTeste");
-			g.setRamo("RamoTeste");
+			g.setNome("GrupoTeste100");
+			g.setNomeProprietario(u1.getNome());
+			g.setProprietarioId(u1.getId());
+			g.setRamo("RamoTeste100");
 			g.setIntegrantes(integrantes);
 			
 			String grupoJSON = JSONUtil.getJSON(g);
@@ -233,9 +236,9 @@ public class RestClient {
 			HttpPost postRequest = new HttpPost("http://localhost:8080/waypoints-ws/recursos/usuario/cadastro");
 
 			Usuario usuario = new Usuario();
-			usuario.setNome("potato");
-			usuario.setEmail("potato@gmail.com");
-			usuario.setSenha("potatoes");
+			usuario.setNome("teste1234");
+			usuario.setEmail("teste1234@gmail.com");
+			usuario.setSenha("teste1234");
 			usuario.setCategoriaCNH("AB");
 			usuario.setSexo(Sexo.M);
 			
@@ -335,6 +338,27 @@ public class RestClient {
 		try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
 
 			HttpGet postRequest = new HttpGet("http://localhost:8080/waypoints-ws/recursos/usuario/" + id);
+
+			HttpResponse response = httpClient.execute(postRequest);
+
+			// Leitura da resposta vinda do servidor
+			BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+
+			String resposta;
+			System.out.println("Status: " + response.getStatusLine().getStatusCode());
+			while ((resposta = br.readLine()) != null) {
+				System.out.println("Servidor responde: " + resposta);
+			}
+
+		} catch (IOException e) {
+
+		}
+	}
+	
+	private static void findByEmail(String email) {
+		try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
+
+			HttpGet postRequest = new HttpGet("http://localhost:8080/waypoints-ws/recursos/usuario/email/" + email);
 
 			HttpResponse response = httpClient.execute(postRequest);
 

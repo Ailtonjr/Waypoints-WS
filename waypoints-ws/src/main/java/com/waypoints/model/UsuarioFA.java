@@ -58,6 +58,15 @@ public class UsuarioFA {
 		return usuarioDAO.findById(id);
 	}
 	
+	public Usuario getByEmail(String email) throws BusinessException, SQLException {
+		if ((email == null)
+				|| (email.isEmpty())
+				|| (!EmailUtil.isValid(email))) {
+			throw new BusinessException("Email informado inválido.");
+		}
+		return usuarioDAO.getByEmail(email);
+	}
+	
 	private void validaUsuario(Usuario usuario) throws BusinessException, SQLException {
 		if (usuario.getNome() == null || usuario.getNome().isEmpty()) {
 			throw new BusinessException("O nome informado é inválido.");

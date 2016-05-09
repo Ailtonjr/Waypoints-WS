@@ -152,7 +152,7 @@ public class UsuarioDAO {
 			pStmt.setString(5, usuario.getSexo().toString());
 			
 			if (pStmt.executeUpdate() > 0) {
-				return usuario;
+				return getByEmail(usuario.getEmail());
 			}
 
 		} catch (SQLException ex) {

@@ -115,4 +115,21 @@ public class UsuarioController {
 		}
 	}
 	
+	@GET
+	@Path("email/{email}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response findByEmail(@PathParam("email") String email) {
+		try {
+			Usuario usuario = usuarioFA.getByEmail(email);
+			if (usuario != null) {
+				return Response.status(Status.OK).entity(usuario).build();
+			}
+			return Response.status(Status.NOT_FOUND).entity(usuario).build();
+		} catch (BusinessException be) {
+			return Response.status(Status.FORBIDDEN).entity(be.getMessage()).build();
+		} catch (SQLException sqle) {
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(sqle.getMessage()).build();
+		}
+	}
+	
 }

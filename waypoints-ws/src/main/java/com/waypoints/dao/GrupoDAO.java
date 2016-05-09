@@ -37,13 +37,14 @@ public class GrupoDAO {
 	}
 	
 	public Grupo cadastrar(Grupo grupo) throws SQLException {
-		String SQL = "INSERT INTO grupo (nome, proprietario, ramo) "
-				+ "VALUES (?,?,?);";
+		String SQL = "INSERT INTO grupo (nome, proprietario, proprietario_id, ramo) "
+				+ "VALUES (?,?,?,?);";
 
 		PreparedStatement pStmt = Conexao.getPreparedStatement(SQL);
 		pStmt.setString(1, grupo.getNome());
 		pStmt.setString(2, grupo.getNomeProprietario());
-		pStmt.setString(3, grupo.getRamo());
+		pStmt.setLong(3, grupo.getProprietarioId());
+		pStmt.setString(4, grupo.getRamo());
 		
 		if (pStmt.executeUpdate() > 0) {
 			grupo.setId(getByNome(grupo.getNome()).getId());
