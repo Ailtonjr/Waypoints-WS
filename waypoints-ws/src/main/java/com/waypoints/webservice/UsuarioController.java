@@ -132,4 +132,20 @@ public class UsuarioController {
 		}
 	}
 	
+	@GET
+	@Path("esqueceu/{email}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response esqueceuSenha(@PathParam("email") String email) {
+		try {
+			if (usuarioFA.recuperaSenha(email)) {
+				return Response.status(Status.OK).entity(email).build();
+			}
+			return Response.status(Status.NOT_FOUND).entity(email).build();
+		} catch (BusinessException be) {
+			return Response.status(Status.FORBIDDEN).entity(be.getMessage()).build();
+		} catch (SQLException sqle) {
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(sqle.getMessage()).build();
+		}
+	}
+	
 }

@@ -1,6 +1,7 @@
 package com.waypoints.model;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -45,6 +46,13 @@ public class GrupoFA {
 			throw new BusinessException("ID informado inválido.");
 		}
 		return grupoDAO.findById(id);
+	}
+	
+	public ArrayList<Grupo> getByProprietarioId(Long id) throws BusinessException, SQLException {
+		if ((id == null) || (id < 0)) {
+			throw new BusinessException("ID informado inválido.");
+		}
+		return grupoDAO.findByProprietarioId(id);
 	}
 	
 	private void validaGrupo(Grupo grupo) throws BusinessException, SQLException {

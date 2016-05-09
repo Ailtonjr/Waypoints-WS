@@ -99,6 +99,10 @@ public class UsuarioDAO {
 //		return usuarios;
 //	}
 	
+	public boolean recuperaSenha(String email) {
+		return true;
+	}
+	
 	public Usuario getById(Long id) throws SQLException {
 		String SQL = "SELECT * FROM usuario WHERE id=?";
 		Map<String, Object> params = new HashMap<>();

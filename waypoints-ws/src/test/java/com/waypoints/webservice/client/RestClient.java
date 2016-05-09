@@ -27,7 +27,8 @@ public class RestClient {
 //		cadastroUsuario();
 //		alterarCadastro();
 //		findById(40);
-		findByEmail("romulogoelzer@gmail.com");
+//		findByEmail("romulogoelzer@gmail.com");
+		findByProprietarioId(8);
 //		excluirUsuario();
 //		teste();
 //		cadastroGrupo();
@@ -376,4 +377,24 @@ public class RestClient {
 		}
 	}
 	
+	private static void findByProprietarioId(int proprietarioId) {
+		try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
+
+			HttpGet postRequest = new HttpGet("http://localhost:8080/waypoints-ws/recursos/grupo/proprietario/" + proprietarioId);
+
+			HttpResponse response = httpClient.execute(postRequest);
+
+			// Leitura da resposta vinda do servidor
+			BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+
+			String resposta;
+			System.out.println("Status: " + response.getStatusLine().getStatusCode());
+			while ((resposta = br.readLine()) != null) {
+				System.out.println("Servidor responde: " + resposta);
+			}
+
+		} catch (IOException e) {
+
+		}
+	}
 }

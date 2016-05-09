@@ -1,6 +1,7 @@
 package com.waypoints.webservice;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -73,6 +74,23 @@ public class GrupoController {
 				return Response.status(Status.OK).entity(grupo).build();
 			}
 			return Response.status(Status.NOT_FOUND).entity(grupo).build();
+		} catch (BusinessException be) {
+			return Response.status(Status.FORBIDDEN).entity(be.getMessage()).build();
+		} catch (SQLException sqle) {
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(sqle.getMessage()).build();
+		}
+	}
+	
+	@GET
+	@Path("proprietario/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response find(@PathParam("id") Long proprietarioId) {
+		try {
+			ArrayList<Grupo> grupos;
+			if ((grupos = grupoFA.getByProprietarioId(proprietarioId)) != null) {
+				return Response.status(Status.OK).entity(grupos).build();
+			}
+			return Response.status(Status.NOT_FOUND).entity(proprietarioId).build();
 		} catch (BusinessException be) {
 			return Response.status(Status.FORBIDDEN).entity(be.getMessage()).build();
 		} catch (SQLException sqle) {

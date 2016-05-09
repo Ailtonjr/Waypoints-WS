@@ -36,6 +36,14 @@ public class GrupoDAO {
 		return getSingleResult(SQL, params);
 	}
 	
+	public ArrayList<Grupo> findByProprietarioId(Long proprietarioId) throws SQLException {
+		String SQL = "SELECT id, nome, ramo, proprietario_id FROM grupo WHERE proprietario_id=?";
+		Map<String, Object> params = new HashMap<>();
+		params.put("proprietario_id", proprietarioId);
+		
+		return getMultipleResult(SQL, params);
+	}
+	
 	public Grupo cadastrar(Grupo grupo) throws SQLException {
 		String SQL = "INSERT INTO grupo (nome, proprietario, proprietario_id, ramo) "
 				+ "VALUES (?,?,?,?);";
@@ -148,6 +156,33 @@ public class GrupoDAO {
 		return null;
 	}
 
+	private ArrayList<Grupo> getMultipleResult(String query, Map<String, Object> filter) throws SQLException {
+		PreparedStatement pStmt = Conexao.getPreparedStatement(query);
+
+		if (filter != null) {
+			// seta os parâmetros
+			int pos = filter.size();
+			for (Entry<String, Object> entry : filter.entrySet()) {
+				pStmt.setObject(pos, entry.getValue());
+				pos--;
+			}
+		}
+
+		ResultSet rs = pStmt.executeQuery();
+		
+		ArrayList<Grupo> grupos = new ArrayList<>();
+		while (rs.next()) {
+			Grupo g = new Grupo();
+			g.setId(rs.getLong("id"));
+			g.setNome(rs.getString("nome"));
+			g.setRamo(rs.getString("ramo"));
+			g.setProprietarioId(rs.getLong("proprietario_id"));
+			grupos.add(g);
+		}
+		
+		return grupos.size() > 0 ? grupos : null;
+	}
+	
 	private List<Integrante> findIntegrantes(Long grupoId) throws SQLException {
 		String SQL = "SELECT * FROM grupo_usuario WHERE id_grupo=?";
 		
